@@ -1,0 +1,17 @@
+# http://localhost:8761/ 查看eureka
+server:
+  port: 8761
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+  # 两个false来表明自己是一个eureka server
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+spring:
+  application:
+    name: eurka-server

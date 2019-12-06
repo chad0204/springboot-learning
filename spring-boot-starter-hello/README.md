@@ -1,0 +1,2 @@
+- springboot官方建议对于非官方的starter命名方式为xxx-spring-boot-starter
+- 使用mvn clean install打成jar包,供其他项目pom引入，如springboot-2x中使用

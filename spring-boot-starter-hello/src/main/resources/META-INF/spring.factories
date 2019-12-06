@@ -1,0 +1,3 @@
+# 进行配置类注册
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+ com.pc.springbootstarterhello.HelloServiceAutoConfiguration

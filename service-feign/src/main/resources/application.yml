@@ -1,0 +1,15 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+server:
+  port: 8766
+spring:
+  application:
+    name: service-feign
+
+
+# springCloud的D版本之后的版本断路器没有默认打开，需要显示配置
+feign:
+  hystrix:
+    enabled: true

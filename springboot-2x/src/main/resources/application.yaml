@@ -1,0 +1,14 @@
+#server:
+#  port: 8081
+
+active:
+  yaml: yaml
+
+
+
+demo:
+  name: springboot
+  desc: nothing
+  uuid: ${random.uuid}
+
+
