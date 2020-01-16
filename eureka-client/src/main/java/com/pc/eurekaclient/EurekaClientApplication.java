@@ -20,9 +20,16 @@ public class EurekaClientApplication {
     @Value("${server.port}")
     String port;
 
+    //远程配置的属性
+    @Value("${foo}")
+    String foo;
+
+    /**
+     * 加载远程配置启动真的慢
+     */
     @RequestMapping
     public String hello(String name) {
-        return "From-"+port+":hello,"+name;
+        return "From-"+port+":hello,"+name+","+foo;
     }
 
 }

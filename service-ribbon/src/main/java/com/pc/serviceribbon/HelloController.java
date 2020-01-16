@@ -29,7 +29,7 @@ public class HelloController {
     }
 
     /**
-     * 使用负载均衡器,从eureka获取实例(当然也可以不通过eureka从配置中读取服务实例进行负载均衡)
+     * 使用负载均衡器,从eureka获取实例(当然也可以不通过eureka，而是从配置中读取服务实例进行负载均衡)
      */
     @Autowired
     LoadBalancerClient loadBalancer;
