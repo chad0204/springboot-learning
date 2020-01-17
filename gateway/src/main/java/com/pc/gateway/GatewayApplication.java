@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-
+/**
+ * 网关的作用：路由，限流，权限，缓存
+ */
 @SpringBootApplication
 @RestController
 public class GatewayApplication {
@@ -23,6 +25,11 @@ public class GatewayApplication {
      *
      * 除了创建路由RouteLocatorBuilder可以让你添加各种predicates和filters
      *
+     * predicates断言：通过条件匹配，判断是否路由。比如判断时间、path、header、方法、cookie等是否满足条件,
+     *                Predict决定了请求是否能被路由以及请求由哪一个路由处理。
+     *
+     * filters：对请求进行一些过滤修改，如重写地址、添加header。自定义filter
+     *
      * 下面的代码：
      *      1.让请求"/get"都转发到"http://httpbin.org:80"
      *      2.在route配置上，我们添加了一个filter，该filter会将请求添加一个header,key为hello，value为world。
@@ -30,23 +37,23 @@ public class GatewayApplication {
      *        该router中有一个hystrix的filter,该filter可以配置名称、和指向性fallback的逻辑的地址，比如本案例中重定向到了“/fallback”
      *
      */
-    @Bean
-    public RouteLocator myRoutes(RouteLocatorBuilder builder) {
-        String httpUri = "http://httpbin.org:80";
-        return builder.routes()
-                .route(p -> p
-                        .path("/get")
-                        .filters(f -> f.addRequestHeader("Hello", "World"))
-                        .uri(httpUri))
-                .route(p -> p
-                        .host("*.hystrix.com")
-                        .filters(f -> f
-                                .hystrix(config -> config
-                                        .setName("mycmd")
-                                        .setFallbackUri("forward:/fallback")))
-                        .uri(httpUri))
-                .build();
-    }
+//    @Bean
+//    public RouteLocator myRoutes(RouteLocatorBuilder builder) {
+//        String httpUri = "http://httpbin.org:80";
+//        return builder.routes()
+//                .route(p -> p
+//                        .path("/get")
+//                        .filters(f -> f.addRequestHeader("Hello", "World"))
+//                        .uri(httpUri))
+//                .route(p -> p
+//                        .host("*.hystrix.com")
+//                        .filters(f -> f
+//                                .hystrix(config -> config
+//                                        .setName("mycmd")
+//                                        .setFallbackUri("forward:/fallback")))
+//                        .uri(httpUri))
+//                .build();
+//    }
 
     /**
      * 终端运行：curl --dump-header - --header 'Host: www.hystrix.com' http://localhost:8080/delay/3
@@ -64,7 +71,7 @@ public class GatewayApplication {
 //                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
 //                "Accept-Encoding": "gzip, deflate, br",
 //                "Accept-Language": "zh-CN,zh;q=0.9",
-//                "Forwarded": "proto=http;host=\"localhost:8080\";for=\"0:0:0:0:0:0:0:1:60712\"",
+//                "Forwarded"˙: "proto=http;host=\"localhost:8080\";for=\"0:0:0:0:0:0:0:1:60712\"",
 //                "Hello": "World",
 //                "Host": "httpbin.org",
 //                "Sec-Fetch-Mode": "navigate",

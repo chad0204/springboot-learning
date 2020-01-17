@@ -1,0 +1,143 @@
+server:
+    port: 8080
+
+# 指定启动配置文件,从下面三线文件中选一个
+spring:
+  profiles:
+    active: rewritepath_route
+
+
+# ###############Predicates
+
+
+# 三线表示新建配置文件，文件名为after_route，uri配置将请求路由到http://localhost:8881/hello?name=aa
+# predicates配置，如果请求时间在这个配置时间之后，会路由；请求时间在此之前，不会路由，请求404
+# 除了配置啥代码不用写，访问localhost:8080即可。
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: after_route
+        uri: http://localhost:8881/hello?name=aa
+        predicates:
+        - After=2019-01-20T17:42:47.789-07:00[America/Denver]
+  profiles: after_route
+
+
+# 当请求的Header中有X-Request-Id的header名，且header值为数字时，请求会被路由到配置的 uri
+# $ curl -H 'X-Request-Id:1' localhost:8081
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: header_route
+        uri: http://httpbin.org:80/get
+        predicates:
+        - Header=X-Request-Id, \d+
+  profiles: header_route
+
+
+# 请求带有cookie名为 name, cookie值为forezp 的请求将都会转发到uri为 http://httpbin.org:80/get的地址上
+# $ curl -H 'Cookie:name=pc' localhost:8081
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: cookie_route
+        uri: http://httpbin.org:80/get
+        predicates:
+        - Cookie=name, pc
+  profiles: cookie_route
+
+
+# 请求头中含有Host为fangzhipeng.com的请求将会被路由转发转发到配置的uri
+# curl -H 'Host:www.fangzhipeng.com' localhost:8081
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: host_route
+        uri: http://httpbin.org:80/get
+        predicates:
+        - Host=**.fangzhipeng.com
+  profiles: host_route
+
+
+# 所有的GET类型的请求都会路由转发到配置的uri
+# curl localhost:8081   curl -XPOST localhost:8081
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: method_route
+        uri: http://httpbin.org:80/get
+        predicates:
+        - Method=GET
+  profiles: method_route
+
+
+# 所有的请求路径满足/foo/{segment}的请求将会匹配并被路由，比如/foo/1 、/foo/bar的请求，将会命中匹配，并成功转发。
+# curl localhost:8081/foo/dew
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: path_route
+        uri: http://httpbin.org:80/get
+        predicates:
+        - Path=/foo/{segment}
+  profiles: path_route
+
+# 配置了请求中含有参数foo，并且foo的值匹配ba.，则请求命中路由，比如一个请求中含有参数名为foo，值的为bar，能够被正确路由转发
+# curl localhost:8081?foo=bar
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: query_route
+        uri: http://httpbin.org:80/get
+        predicates:
+        - Query=foo, ba.
+  profiles: query_route
+
+
+
+# ###############filter
+
+# AddRequestHeader过滤器工厂会在请求头加上一对请求头，名称为X-Request-Foo，值为Bar
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: add_request_header_route
+        uri: http://httpbin.org:80/get
+        filters:
+        - AddRequestHeader=X-Request-Foo, Bar
+        predicates:
+        - After=2017-01-20T17:42:47.789-07:00[America/Denver]
+  profiles: add_request_header_route
+
+
+
+# http://localhost:8080/hello/aa?name=bb会被转发到http://localhost:8881/hello?name=bb
+# 请求重定向
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: rewritepath_route
+        uri: http://localhost:8881/
+        predicates:
+        - Path=/hello/**
+        filters:
+        - RewritePath=/hello/(?<segment>.*), /$\{segment}
+  profiles: rewritepath_route
