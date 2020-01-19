@@ -1,14 +1,15 @@
 # 修改端口号多次启动
 server:
-  port: 8762
-#  port: 8763
-#  port: 8764
+#  port: 8881
+#  port: 8882
+  port: 8883
 
 # spring.application.name很重要，服务与服务之间相互调用一般都是根据这个name
 spring:
   application:
     name: eureka-client
 
+# 集群注册中心用逗号分割
 eureka:
   client:
     serviceUrl:
