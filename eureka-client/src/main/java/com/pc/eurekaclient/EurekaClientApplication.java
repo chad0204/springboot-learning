@@ -9,6 +9,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.Random;
 
 @SpringBootApplication
 @EnableEurekaClient
@@ -31,8 +32,16 @@ public class EurekaClientApplication {
     /**
      * 加载远程配置启动真的慢
      */
-    @RequestMapping
+    @RequestMapping("/hello")
     public String hello(String name) {
+        return "From-"+port+":hello,"+name+","+foo;
+    }
+
+
+    @RequestMapping("/hystrixHello")
+    public String hystrixHello(String name) throws InterruptedException {
+        //hystrix默认的超时时间是2000ms,这里通过睡眠1-3000来随机超时
+        Thread.sleep(new Random().nextInt(3000));
         return "From-"+port+":hello,"+name+","+foo;
     }
 

@@ -21,4 +21,14 @@ public class HelloController {
     public String hello(@RequestParam String name) {
         return helloService.hiService( "hystrix-"+name );
     }
+
+    /**
+     * 测试超时熔断
+     * @param name
+     * @return
+     */
+    @GetMapping(value = "/hystrixHello")
+    public String hystrixHello(@RequestParam String name) {
+        return helloService.timeoutService( "hystrix-"+name );
+    }
 }

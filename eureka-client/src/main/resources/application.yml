@@ -1,8 +1,9 @@
 # 修改端口号多次启动
 server:
-#  port: 8881
+  port: 8881
 #  port: 8882
-  port: 8883
+#  port: 8883
+#  port: 8884
 
 # spring.application.name很重要，服务与服务之间相互调用一般都是根据这个name
 spring:
