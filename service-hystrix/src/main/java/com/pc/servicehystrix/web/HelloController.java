@@ -1,10 +1,12 @@
 package com.pc.servicehystrix.web;
 
+import com.pc.servicehystrix.service.CommandService;
 import com.pc.servicehystrix.service.HelloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.concurrent.ExecutionException;
 
 /**
  * 在ribbon中使用断路器
@@ -16,6 +18,7 @@ public class HelloController {
 
     @Autowired
     HelloService helloService;
+
 
     @GetMapping(value = "/hello")
     public String hello(@RequestParam String name) {
@@ -31,4 +34,7 @@ public class HelloController {
     public String hystrixHello(@RequestParam String name) {
         return helloService.timeoutService( "hystrix-"+name );
     }
+
+
+
 }

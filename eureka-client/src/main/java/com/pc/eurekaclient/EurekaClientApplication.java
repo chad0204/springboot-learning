@@ -41,8 +41,26 @@ public class EurekaClientApplication {
     @RequestMapping("/hystrixHello")
     public String hystrixHello(String name) throws InterruptedException {
         //hystrix默认的超时时间是2000ms,这里通过睡眠1-3000来随机超时
-        Thread.sleep(new Random().nextInt(3000));
-        return "From-"+port+":hello,"+name+","+foo;
+        int time = new Random().nextInt(3000);
+        Thread.sleep(time);
+        return "From-"+port+":hello,"+name+"["+time+"]";
+    }
+
+    //提供一个查询接口
+    @RequestMapping("/getUser")
+    public String hystrixHello(Long id) throws InterruptedException {
+        //hystrix默认的超时时间是2000ms,这里通过睡眠1-3000来随机超时
+        int time = new Random().nextInt(3000);
+        Thread.sleep(time);
+        String name;
+        if(id.equals(1L)) {
+            name = "路飞";
+        } else if(id.equals(2L)) {
+            name = "娜美";
+        } else {
+            name = "unknown";
+        }
+        return "From-"+port+":hello,"+name+"["+time+"]";
     }
 
 }
